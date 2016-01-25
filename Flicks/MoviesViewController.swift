@@ -10,13 +10,15 @@ import UIKit
 import AFNetworking
 import MBProgressHUD
 
-class MoviesViewController: UIViewController, UITableViewDataSource,UITableViewDelegate, UICollectionViewDataSource {
+class MoviesViewController: UIViewController, UITableViewDataSource,UITableViewDelegate, UICollectionViewDataSource, UISearchBarDelegate {
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var networkErrorView: UIView!
+    @IBOutlet weak var searchBar: UISearchBar!
     
     var movies: [NSDictionary]?
+    var filteredMovies: [NSDictionary]?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,6 +26,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource,UITableViewD
         //tableView.dataSource = self
         //tableView.delegate = self
         collectionView.dataSource = self
+        searchBar.delegate = self
         // Do any additional setup after loading the view.
         
         let refreshControl = UIRefreshControl()
@@ -57,6 +60,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource,UITableViewD
                             print("response: \(responseDictionary)")
                             
                             self.movies = responseDictionary["results"] as? [NSDictionary]
+                            self.filteredMovies = self.movies
                             //self.tableView.reloadData()
                             self.collectionView.reloadData()
                     }
@@ -116,7 +120,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource,UITableViewD
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("MovieCell", forIndexPath: indexPath) as! MovieCell
         
-        let movie = movies![indexPath.row]
+        let movie = filteredMovies![indexPath.row]
         let title = movie["title"] as! String
         let overview = movie["overview"] as! String
         
@@ -137,7 +141,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource,UITableViewD
     }
     
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if let movies = movies {
+        if let movies = filteredMovies {
             return movies.count
         } else {
             return 0
@@ -147,7 +151,10 @@ class MoviesViewController: UIViewController, UITableViewDataSource,UITableViewD
     func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("MovieCollectionCell", forIndexPath: indexPath) as! MovieCollectionViewCell
         
-        let movie = movies![indexPath.row]
+        let movie = filteredMovies![indexPath.row]
+        let title = movie["title"] as! String
+        
+        cell.movieTitle.text = title
         
         if let posterPath = movie["poster_path"] as? String {
             let baseUrl = "http://image.tmdb.org/t/p/w500"
@@ -156,10 +163,27 @@ class MoviesViewController: UIViewController, UITableViewDataSource,UITableViewD
         }
         else {
             cell.posterImage.image = nil
+            cell.movieTitle.hidden = false
         }
         
         //print("row \(indexPath.row)")
         return cell
+    }
+    
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText.isEmpty {
+            filteredMovies = movies
+        } else {
+            filteredMovies = movies!.filter({(dataItem: NSDictionary) -> Bool in
+                if dataItem["title"]?.rangeOfString(searchText, options: .CaseInsensitiveSearch) != nil {
+                    return true
+                } else {
+                    return false
+                }
+            })
+        }
+        print(filteredMovies)
+        collectionView.reloadData()
     }
 
     /*
