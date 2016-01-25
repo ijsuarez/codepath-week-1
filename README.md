@@ -2,7 +2,7 @@
 
 **Flicks** is a movies app using the [The Movie Database API](http://docs.themoviedb.apiary.io/#).
 
-Time spent: **5** hours spent in total
+Time spent: **6** hours spent in total
 
 ## User Stories
 
@@ -18,7 +18,7 @@ The following **optional** features are implemented:
 - [x] User sees an error message when there's a networking error.
 - [x] Movies are displayed using a CollectionView instead of a TableView.
 - [x] User can search for a movie.
-- [ ] All images fade in as they are loading.
+- [x] All images fade in as they are loading.
 - [ ] Customize the UI.
 
 The following **additional** features are implemented:
@@ -29,7 +29,7 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/ywDCDR7.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='http://i.imgur.com/wanw1u2.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
@@ -42,6 +42,10 @@ I was having trouble getting the search function to work. I think I was starting
 ~~There also exists a bug where the app crashes when you try to search and there are no movies to search during network errors. Also, in the transition to a collection view, you can no longer pull down to reload when no movies are shown.~~
 
 Fixed bugs and got search to work. Too bad it's after the deadline lol.
+
+I didn't want to work on customizing the UI because I wanted a better idea of how the whole app would look since we're building upon this app on next week's project.
+
+Keyboard is dismissed when attempting to scroll on CollectionView. For some reason I can't figure out why tapping on the screen won't dismiss the keyboard.
 
 ## License
 

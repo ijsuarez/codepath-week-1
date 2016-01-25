@@ -128,8 +128,23 @@ class MoviesViewController: UIViewController, UITableViewDataSource,UITableViewD
         
         if let posterPath = movie["poster_path"] as? String {
             let baseUrl = "http://image.tmdb.org/t/p/w500"
-            let imageUrl = NSURL(string: baseUrl + posterPath)
-            cell.posterView.setImageWithURL(imageUrl!)
+            let imageRequest = NSURLRequest(URL: NSURL(string: baseUrl + posterPath)!)
+            cell.posterView.setImageWithURLRequest(imageRequest, placeholderImage: nil, success: {(imageRequest, imageResponse, image) -> Void in
+                if imageResponse != nil {
+                    print("Image not cached, fade in image")
+                    cell.posterView.alpha = 0.0
+                    cell.posterView.image = image
+                    UIView.animateWithDuration(0.3, animations: {() -> Void in
+                        cell.posterView.alpha = 1.0
+                    })
+                } else {
+                    print("Image was cached")
+                    cell.posterView.image = image
+                }
+            },
+            failure: {(imageRequest, imageResponse, error) -> Void in
+                cell.posterView.image = nil
+            })
         }
         else {
             cell.posterView.image = nil
@@ -157,6 +172,33 @@ class MoviesViewController: UIViewController, UITableViewDataSource,UITableViewD
         let title = movie["title"] as! String
         
         cell.movieTitle.text = title
+        
+        if let posterPath = movie["poster_path"] as? String {
+            let baseUrl = "http://image.tmdb.org/t/p/w500"
+            let imageRequest = NSURLRequest(URL: NSURL(string: baseUrl + posterPath)!)
+            cell.posterImage.setImageWithURLRequest(imageRequest, placeholderImage: nil, success: {(imageRequest, imageResponse, image) -> Void in
+                if imageResponse != nil {
+                    print("Image not cached, fade in image")
+                    cell.posterImage.alpha = 0.0
+                    cell.posterImage.image = image
+                    UIView.animateWithDuration(0.3, animations: {() -> Void in
+                        cell.posterImage.alpha = 1.0
+                    })
+                } else {
+                    print("Image was cached")
+                    cell.posterImage.image = image
+                }
+            },
+            failure: {(imageRequest, imageResponse, error) -> Void in
+                cell.posterImage.image = nil
+                cell.movieTitle.hidden = false
+            })
+        }
+        else {
+            cell.posterImage.image = nil
+            cell.movieTitle.hidden = false
+        }
+
         
         if let posterPath = movie["poster_path"] as? String {
             let baseUrl = "http://image.tmdb.org/t/p/w500"
@@ -188,6 +230,10 @@ class MoviesViewController: UIViewController, UITableViewDataSource,UITableViewD
             })
         }
         collectionView.reloadData()
+    }
+    
+    @IBAction func onTap(sender: AnyObject) {
+        view.endEditing(true) //this doesn't seem to work?
     }
 
     /*
