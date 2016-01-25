@@ -2,7 +2,7 @@
 
 **Flicks** is a movies app using the [The Movie Database API](http://docs.themoviedb.apiary.io/#).
 
-Time spent: **4.5** hours spent in total
+Time spent: **5** hours spent in total
 
 ## User Stories
 
@@ -17,7 +17,7 @@ The following **optional** features are implemented:
 
 - [x] User sees an error message when there's a networking error.
 - [x] Movies are displayed using a CollectionView instead of a TableView.
-- [ ] User can search for a movie.
+- [x] User can search for a movie.
 - [ ] All images fade in as they are loading.
 - [ ] Customize the UI.
 
@@ -29,7 +29,7 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/WnK2trY.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='http://i.imgur.com/ywDCDR7.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
@@ -39,7 +39,9 @@ Describe any challenges encountered while building the app.
 
 I was having trouble getting the search function to work. I think I was starting to get a decent idea of what was wrong, but I ran out of time and had to submit my work. In the future I need to get started on the optional features earlier.
 
-There also exists a bug where the app crashes when you try to search and there are no movies to search during network errors. Also, in the transition to a collection view, you can no longer pull down to reload when no movies are shown.
+~~There also exists a bug where the app crashes when you try to search and there are no movies to search during network errors. Also, in the transition to a collection view, you can no longer pull down to reload when no movies are shown.~~
+
+Fixed bugs and got search to work. Too bad it's after the deadline lol.
 
 ## License
 

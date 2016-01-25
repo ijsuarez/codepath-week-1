@@ -33,6 +33,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource,UITableViewD
         refreshControl.addTarget(self, action: "refreshControlAction:", forControlEvents: UIControlEvents.ValueChanged)
         //tableView.insertSubview(refreshControl, atIndex: 0)
         collectionView.insertSubview(refreshControl, atIndex: 0)
+        collectionView.alwaysBounceVertical = true
         
         let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
         let url = NSURL(string:"https://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)")
@@ -99,6 +100,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource,UITableViewD
                             print("response: \(responseDictionary)")
                             
                             self.movies = responseDictionary["results"] as? [NSDictionary]
+                            self.searchBar(self.searchBar, textDidChange: self.searchBar.text!)
                             //self.tableView.reloadData()
                             self.collectionView.reloadData()
                     }
@@ -174,15 +176,17 @@ class MoviesViewController: UIViewController, UITableViewDataSource,UITableViewD
         if searchText.isEmpty {
             filteredMovies = movies
         } else {
-            filteredMovies = movies!.filter({(dataItem: NSDictionary) -> Bool in
-                if dataItem["title"]?.rangeOfString(searchText, options: .CaseInsensitiveSearch) != nil {
-                    return true
-                } else {
-                    return false
+            filteredMovies = movies?.filter({(dataItem: NSDictionary) -> Bool in
+                if let title = dataItem["title"] as? String {
+                    if title.rangeOfString(searchText, options: .CaseInsensitiveSearch) != nil {
+                        return true
+                    } else {
+                        return false
+                    }
                 }
+                return false
             })
         }
-        print(filteredMovies)
         collectionView.reloadData()
     }
 
