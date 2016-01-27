@@ -19,6 +19,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource,UITableViewD
     
     var movies: [NSDictionary]?
     var filteredMovies: [NSDictionary]?
+    var endpoint: String!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,8 +36,17 @@ class MoviesViewController: UIViewController, UITableViewDataSource,UITableViewD
         collectionView.insertSubview(refreshControl, atIndex: 0)
         collectionView.alwaysBounceVertical = true
         
+        networkRequest(true)
+    }
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    func networkRequest(initialLoad: Bool) {
         let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
-        let url = NSURL(string:"https://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)")
+        let url = NSURL(string:"https://api.themoviedb.org/3/movie/\(endpoint)?api_key=\(apiKey)")
         let request = NSURLRequest(URL: url!)
         let session = NSURLSession(
             configuration: NSURLSessionConfiguration.defaultSessionConfiguration(),
@@ -44,11 +54,15 @@ class MoviesViewController: UIViewController, UITableViewDataSource,UITableViewD
             delegateQueue:NSOperationQueue.mainQueue()
         )
         
-        MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+        if initialLoad {
+            MBProgressHUD.showHUDAddedTo(self.view, animated: true)
+        }
         
         let task : NSURLSessionDataTask = session.dataTaskWithRequest(request,
             completionHandler: { (dataOrNil, response, error) in
-                MBProgressHUD.hideHUDForView(self.view, animated: true)
+                if initialLoad {
+                    MBProgressHUD.hideHUDForView(self.view, animated: true)
+                }
                 if response != nil {
                     self.networkErrorView.hidden = true
                 } else {
@@ -70,44 +84,9 @@ class MoviesViewController: UIViewController, UITableViewDataSource,UITableViewD
         
         task.resume()
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     
     func refreshControlAction(refreshControl: UIRefreshControl) {
-        let apiKey = "a07e22bc18f5cb106bfe4cc1f83ad8ed"
-        let url = NSURL(string:"https://api.themoviedb.org/3/movie/now_playing?api_key=\(apiKey)")
-        let request = NSURLRequest(URL: url!)
-        let session = NSURLSession(
-            configuration: NSURLSessionConfiguration.defaultSessionConfiguration(),
-            delegate:nil,
-            delegateQueue:NSOperationQueue.mainQueue()
-        )
-    
-        let task : NSURLSessionDataTask = session.dataTaskWithRequest(request,
-            completionHandler: { (dataOrNil, response, error) in
-                if response != nil {
-                    self.networkErrorView.hidden = true
-                } else {
-                    self.networkErrorView.hidden = false
-                }
-                
-                if let data = dataOrNil {
-                    if let responseDictionary = try! NSJSONSerialization.JSONObjectWithData(
-                        data, options:[]) as? NSDictionary {
-                            print("response: \(responseDictionary)")
-                            
-                            self.movies = responseDictionary["results"] as? [NSDictionary]
-                            self.searchBar(self.searchBar, textDidChange: self.searchBar.text!)
-                            //self.tableView.reloadData()
-                            self.collectionView.reloadData()
-                    }
-                }
-        });
-        
-        task.resume()
+        networkRequest(false)
         refreshControl.endRefreshing()
     }
     
