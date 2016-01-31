@@ -103,6 +103,10 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 Describe any challenges encountered while building the app.
 
+I had some trouble figuring out how to add transparency to the navigation bar at the bottom. I also had a trouble figuring out how to deselect an item in the collection view since the documentation on the course website only covered table views.
+
+There are a couple things that I would like to improve if I had the time, such as adding padding at the bottom of the detail view so text doesn't end up behind the nav bar for long synopses and adding more helpful details in the detail view such as rating and nearby theaters that are playing the movie.
+
 ## License
 
     Copyright 2016 Isaias Suarez
